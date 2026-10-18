@@ -3,6 +3,7 @@ import { X, Award, MapPin, Instagram, Globe, Sparkles } from 'lucide-react';
 import { ArtisanProfile } from '@/types/crochet';
 import { FollowButton } from './FollowButton';
 import { useSocialStore } from '@/store/useSocialStore';
+import { useCrochetStore } from '@/store/useCrochetStore';
 
 interface PublicArtisanProfileModalProps {
   artisan: ArtisanProfile | null;
@@ -16,6 +17,7 @@ export const PublicArtisanProfileModal: React.FC<PublicArtisanProfileModalProps>
   onClose,
 }) => {
   const { isFollowing } = useSocialStore();
+  const { projects, setSelectedProjectDetailId } = useCrochetStore();
 
   if (!isOpen || !artisan) return null;
 
@@ -114,6 +116,47 @@ export const PublicArtisanProfileModal: React.FC<PublicArtisanProfileModalProps>
             </div>
           </div>
         )}
+
+        {/* Receitas Publicadas por este Artesão */}
+        <div className="space-y-2 pt-2 border-t border-cream-200 dark:border-stone-800">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-stone-700 dark:text-stone-300">
+              Receitas Publicadas
+            </span>
+            <span className="text-[10px] text-stone-400 font-mono">
+              {projects.filter((p) => p.designer.userId === artisan.id || p.designer.handle === artisan.handle).length} projetos
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+            {projects
+              .filter((p) => p.designer.userId === artisan.id || p.designer.handle === artisan.handle)
+              .map((proj) => (
+                <div
+                  key={proj.id}
+                  onClick={() => {
+                    setSelectedProjectDetailId(proj.id);
+                    onClose();
+                  }}
+                  className="flex items-center gap-2 p-2 rounded-xl bg-cream-50 dark:bg-stone-800 hover:bg-cream-100 dark:hover:bg-stone-700 border border-cream-200 dark:border-stone-700 cursor-pointer transition-all group/item"
+                >
+                  <img
+                    src={proj.thumbnailUrl || 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=100&q=80'}
+                    alt={proj.title}
+                    className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-stone-800 dark:text-stone-200 group-hover/item:text-terracotta-500 transition-colors truncate">
+                      {proj.title}
+                    </div>
+                    <div className="text-[10px] text-stone-400">
+                      {proj.difficulty}
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
 
         {/* Links Sociais */}
         {artisan.socialLinks && (

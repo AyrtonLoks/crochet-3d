@@ -1,9 +1,16 @@
 import { create } from 'zustand';
-import { CrochetProject, ProjectPart, PatternRow, PrimitiveShape } from '@/types/crochet';
+import {
+  CrochetProject,
+  ProjectPart,
+  PatternRow,
+  PrimitiveShape,
+  MainTab,
+  CreationSubTab,
+} from '@/types/crochet';
 import { PRESET_PROJECTS } from '@/data/presetProjects';
 import { db } from '@/core/storage/db';
 
-export type MainTab = 'studio' | 'pattern' | 'tracker' | 'learn' | 'shelf' | 'community';
+export type { MainTab, CreationSubTab };
 export type ShelfSubTab = 'my-projects' | 'shared-with-me' | 'bookmarks';
 
 interface CrochetState {
@@ -11,7 +18,10 @@ interface CrochetState {
   activeProjectId: string;
   activePartId: string;
   viewTab: MainTab;
+  creationSubTab: CreationSubTab;
   shelfSubTab: ShelfSubTab;
+  selectedProjectDetailId: string | null;
+  trackerIsPlaying: boolean;
   ttsEnabled: boolean;
   voiceCommandsEnabled: boolean;
   isMuted: boolean;
@@ -19,7 +29,11 @@ interface CrochetState {
 
   // Setters
   setViewTab: (tab: MainTab) => void;
+  setCreationSubTab: (subTab: CreationSubTab) => void;
   setShelfSubTab: (subTab: ShelfSubTab) => void;
+  setSelectedProjectDetailId: (id: string | null) => void;
+  setTrackerIsPlaying: (playing: boolean) => void;
+  toggleTrackerPlay: () => void;
   setTtsEnabled: (enabled: boolean) => void;
   setVoiceCommandsEnabled: (enabled: boolean) => void;
   setIsMuted: (muted: boolean) => void;
@@ -58,15 +72,22 @@ export const useCrochetStore = create<CrochetState>((set, get) => ({
   projects: PRESET_PROJECTS,
   activeProjectId: PRESET_PROJECTS[0]?.id || '',
   activePartId: PRESET_PROJECTS[0]?.parts[0]?.id || '',
-  viewTab: 'studio',
+  viewTab: 'community',
+  creationSubTab: 'studio',
   shelfSubTab: 'my-projects',
-  ttsEnabled: true,
+  selectedProjectDetailId: null,
+  trackerIsPlaying: false,
+  ttsEnabled: false,
   voiceCommandsEnabled: false,
   isMuted: false,
   isLoading: false,
 
   setViewTab: (viewTab) => set({ viewTab }),
+  setCreationSubTab: (creationSubTab) => set({ creationSubTab }),
   setShelfSubTab: (shelfSubTab) => set({ shelfSubTab }),
+  setSelectedProjectDetailId: (selectedProjectDetailId) => set({ selectedProjectDetailId }),
+  setTrackerIsPlaying: (trackerIsPlaying) => set({ trackerIsPlaying }),
+  toggleTrackerPlay: () => set((state) => ({ trackerIsPlaying: !state.trackerIsPlaying })),
   setTtsEnabled: (ttsEnabled) => set({ ttsEnabled }),
   setVoiceCommandsEnabled: (voiceCommandsEnabled) => set({ voiceCommandsEnabled }),
   setIsMuted: (isMuted) => set({ isMuted }),

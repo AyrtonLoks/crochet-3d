@@ -133,3 +133,30 @@ describe('PatternValidator', () => {
     }
   });
 });
+
+describe('PatternTranslator', () => {
+  it('deve traduzir corretamente termos de pt-BR para US', async () => {
+    const { PatternTranslator } = await import('@/core/parser/PatternTranslator');
+    const ptText = `Carr 1: 6 pb no anel mágico
+Carr 2: 6 aum (12 pts)
+Carr 3: [1 pb, 1 aum] x 6 (18 pts)`;
+
+    const usText = PatternTranslator.translatePtBrToUs(ptText);
+    expect(usText).toContain('Rnd 1: 6 sc in mr');
+    expect(usText).toContain('Rnd 2: 6 inc (12 sts)');
+    expect(usText).toContain('Rnd 3: [1 sc, 1 inc] x 6 (18 sts)');
+  });
+
+  it('deve traduzir corretamente termos de US para pt-BR', async () => {
+    const { PatternTranslator } = await import('@/core/parser/PatternTranslator');
+    const usText = `Rnd 1: 6 sc in magic ring
+Rnd 2: 6 inc (12 sts)
+Rnd 3: [1 sc, 1 inc] * 6 (18 sts)`;
+
+    const ptText = PatternTranslator.translateUsToPtBr(usText);
+    expect(ptText).toContain('Carr 1: 6 pb no anel mágico');
+    expect(ptText).toContain('Carr 2: 6 aum (12 pts)');
+    expect(ptText).toContain('Carr 3: [1 pb, 1 aum] * 6 (18 pts)');
+  });
+});
+

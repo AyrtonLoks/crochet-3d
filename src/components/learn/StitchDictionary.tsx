@@ -3,6 +3,7 @@ import { Search, BookOpen, Sparkles, Filter } from 'lucide-react';
 import { STITCH_TUTORIALS } from '@/data/tutorialDatabase';
 import { useProfileStore } from '@/store/useProfileStore';
 import { StitchTutorial } from '@/types/crochet';
+import { StitchSvgDiagram } from './StitchSvgDiagram';
 
 export const StitchDictionary: React.FC = () => {
   const { profile, setDominantHand } = useProfileStore();
@@ -137,15 +138,23 @@ export const StitchDictionary: React.FC = () => {
                   {tutorial.description}
                 </p>
 
+                {/* Ilustração Vetorial SVG Passo a Passo */}
+                <div className="my-3">
+                  <StitchSvgDiagram
+                    stitchId={tutorial.id}
+                    isLeftHanded={profile.dominantHand === 'left'}
+                  />
+                </div>
+
                 {/* Resumo do Passo a Passo */}
                 <div className="space-y-1.5 border-t border-cream-200 dark:border-stone-700 pt-3">
                   <div className="text-[11px] font-bold text-stone-700 dark:text-stone-300">
-                    Como Fazer ({profile.dominantHand === 'left' ? 'Mão Esquerda' : 'Mão Direita'}):
+                    Como Fazer ({profile.dominantHand === 'left' ? 'Mão Esquerda 🖐️' : 'Mão Direita ✋'}):
                   </div>
                   <ul className="text-xs text-stone-600 dark:text-stone-400 space-y-1">
-                    {instructions.slice(0, 3).map((st, i) => (
+                    {instructions.map((st, i) => (
                       <li key={i} className="flex items-start gap-1.5 leading-snug">
-                        <span className="text-terracotta-500 font-bold">•</span>
+                        <span className="text-terracotta-500 font-bold">{i + 1}.</span>
                         <span>{st}</span>
                       </li>
                     ))}
@@ -154,8 +163,8 @@ export const StitchDictionary: React.FC = () => {
               </div>
 
               {tutorial.tips && tutorial.tips.length > 0 && (
-                <div className="bg-sage-50/70 dark:bg-sage-950/30 p-2.5 rounded-xl border border-sage-200 dark:border-sage-800 text-[11px] text-sage-800 dark:text-sage-200 italic">
-                  💡 {tutorial.tips[0]}
+                <div className="bg-amber-50/80 dark:bg-amber-950/40 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800 text-[11px] text-amber-900 dark:text-amber-200 italic mt-3">
+                  💡 <b>Dica de Ouro:</b> {tutorial.tips[0]}
                 </div>
               )}
             </div>

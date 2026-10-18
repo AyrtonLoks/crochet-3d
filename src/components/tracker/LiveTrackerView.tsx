@@ -10,6 +10,10 @@ import {
   Trophy,
   Sparkles,
   CheckCircle2,
+  Play,
+  Pause,
+  ListOrdered,
+  BookOpen,
 } from 'lucide-react';
 import { useCrochetStore } from '@/store/useCrochetStore';
 import { useProfileStore } from '@/store/useProfileStore';
@@ -22,18 +26,25 @@ import { StitchType } from '@/types/crochet';
 
 export const LiveTrackerView: React.FC = () => {
   const {
+    projects,
+    activeProjectId,
     getActiveProject,
     getActivePart,
+    setActivePartId,
     advanceStitch,
     rewindStitch,
     advanceRow,
     rewindRow,
     resetProgress,
+    trackerIsPlaying,
+    setTrackerIsPlaying,
+    toggleTrackerPlay,
     ttsEnabled,
     setTtsEnabled,
     voiceCommandsEnabled,
     setVoiceCommandsEnabled,
     isMuted,
+    updateProject,
   } = useCrochetStore();
 
   const { incrementStitches } = useProfileStore();
@@ -43,6 +54,7 @@ export const LiveTrackerView: React.FC = () => {
 
   const [activeHelpStitch, setActiveHelpStitch] = useState<StitchType | null>(null);
   const [showFinishedCelebration, setShowFinishedCelebration] = useState(false);
+  const [showFullPatternSidebar, setShowFullPatternSidebar] = useState(true);
 
   const currentRowIndex = project?.progress.currentRowIndex ?? 0;
   const currentStitchIndex = project?.progress.currentStitchIndex ?? 0;
@@ -50,12 +62,12 @@ export const LiveTrackerView: React.FC = () => {
   const totalRows = part?.rows.length ?? 0;
   const totalStitchesInRow = currentRow?.stitchCount ?? 6;
 
-  // Fala instrução atual via TTS
+  // Fala instrução atual via TTS (somente chamada sob demanda ou se estiver executando)
   const speakCurrent = useCallback(() => {
-    if (!ttsEnabled || !currentRow) return;
+    if (!currentRow) return;
     const text = `Carreira ${currentRow.rowNumber}. ${currentRow.instructionText}. Ponto ${currentStitchIndex + 1} de ${totalStitchesInRow}.`;
     SpeechSynthesizer.speak(text);
-  }, [ttsEnabled, currentRow, currentStitchIndex, totalStitchesInRow]);
+  }, [currentRow, currentStitchIndex, totalStitchesInRow]);
 
   // Ação de avançar ponto
   const handleAdvance = useCallback(() => {
@@ -84,6 +96,7 @@ export const LiveTrackerView: React.FC = () => {
         origin: { y: 0.6 },
       });
       setShowFinishedCelebration(true);
+      setTrackerIsPlaying(false);
     }
   }, [
     project,
@@ -95,6 +108,7 @@ export const LiveTrackerView: React.FC = () => {
     totalRows,
     advanceStitch,
     incrementStitches,
+    setTrackerIsPlaying,
   ]);
 
   // Ação de retroceder ponto
@@ -114,7 +128,10 @@ export const LiveTrackerView: React.FC = () => {
         return;
       }
 
-      if (e.code === 'Space' || e.code === 'ArrowRight') {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        toggleTrackerPlay();
+      } else if (e.code === 'ArrowRight') {
         e.preventDefault();
         handleAdvance();
       } else if (e.code === 'ArrowLeft') {
@@ -134,14 +151,15 @@ export const LiveTrackerView: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleAdvance, handleRewind, advanceRow, rewindRow, speakCurrent]);
+  }, [handleAdvance, handleRewind, advanceRow, rewindRow, speakCurrent, toggleTrackerPlay]);
 
-  // Narração automática de voz ao mudar de carreira
+  // Narração automática de voz APENAS se o usuário tiver dado PLAY e TTS estiver ativo!
+  // NUNCA inicia sozinho sem interação do usuário!
   useEffect(() => {
-    if (ttsEnabled) {
+    if (trackerIsPlaying && ttsEnabled) {
       speakCurrent();
     }
-  }, [currentRowIndex, ttsEnabled]);
+  }, [currentRowIndex, trackerIsPlaying, ttsEnabled]);
 
   const handleVoiceCommand = (
     cmd: 'next' | 'prev' | 'repeat' | 'next-row' | 'prev-row' | 'help'
@@ -168,10 +186,21 @@ export const LiveTrackerView: React.FC = () => {
     }
   };
 
+  const handleJumpToRow = (rowIndex: number) => {
+    if (!project) return;
+    updateProject(project.id, {
+      progress: {
+        ...project.progress,
+        currentRowIndex: rowIndex,
+        currentStitchIndex: 0,
+      },
+    });
+  };
+
   if (!project || !part || !currentRow) {
     return (
-      <div className="p-8 text-center text-stone-500">
-        Nenhum projeto ou parte ativa selecionada.
+      <div className="p-12 text-center text-stone-500 bg-white dark:bg-stone-800 rounded-3xl border border-cream-200 dark:border-stone-700">
+        Nenhum projeto ou peça ativa selecionada para crochetagem.
       </div>
     );
   }
@@ -181,19 +210,41 @@ export const LiveTrackerView: React.FC = () => {
   );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+    <div className="max-w-7xl mx-auto space-y-6 pb-12 animate-fade-in">
       {/* Barra de Status e Controles Superiores */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-stone-800 p-4 rounded-2xl border border-cream-200 dark:border-stone-700 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-stone-800 p-4 rounded-3xl border border-cream-200 dark:border-stone-700 shadow-sm">
         <div>
           <div className="text-xs font-semibold text-terracotta-600 dark:text-terracotta-400">
             {project.title}
           </div>
           <h2 className="text-base font-bold text-stone-900 dark:text-white">
-            Peça: {part.name}
+            Peça em Foco: {part.name}
           </h2>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Botão Play / Pause Explícito com Destaque */}
+          <button
+            onClick={toggleTrackerPlay}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md ${
+              trackerIsPlaying
+                ? 'bg-amber-500 hover:bg-amber-600 text-stone-900'
+                : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+            }`}
+          >
+            {trackerIsPlaying ? (
+              <>
+                <Pause className="w-4 h-4 fill-current" />
+                <span>Pausar Crochetagem</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4 fill-current" />
+                <span>Iniciar Crochetagem (Play)</span>
+              </>
+            )}
+          </button>
+
           {/* Voice Controller */}
           <VoiceController
             isEnabled={voiceCommandsEnabled}
@@ -216,6 +267,19 @@ export const LiveTrackerView: React.FC = () => {
           </button>
 
           <button
+            onClick={() => setShowFullPatternSidebar(!showFullPatternSidebar)}
+            className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              showFullPatternSidebar
+                ? 'bg-terracotta-100 dark:bg-terracotta-900/40 text-terracotta-700 dark:text-terracotta-300 border-terracotta-300'
+                : 'bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 border-cream-200 dark:border-stone-700'
+            }`}
+            title="Exibir/Ocultar visão geral da receita"
+          >
+            <ListOrdered className="w-4 h-4" />
+            <span className="hidden sm:inline">Todas as Partes</span>
+          </button>
+
+          <button
             onClick={resetProgress}
             title="Reiniciar contagem da peça"
             className="p-2 rounded-xl text-stone-400 hover:text-stone-600 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
@@ -225,112 +289,218 @@ export const LiveTrackerView: React.FC = () => {
         </div>
       </div>
 
-      {/* Cartão Gigante de Execução (High-Contrast & Legibilidade 50cm+) */}
-      <div className="bg-white dark:bg-stone-800/90 rounded-3xl border-2 border-cream-300 dark:border-stone-700 p-6 sm:p-10 shadow-lg text-center space-y-6 relative overflow-hidden">
-        {/* Carreira Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-terracotta-100 dark:bg-terracotta-900/40 text-terracotta-700 dark:text-terracotta-300 font-bold text-xs sm:text-sm tracking-wide uppercase">
-          <span>Carreira {currentRow.rowNumber} de {totalRows}</span>
-          <span>•</span>
-          <span>{currentRow.type === 'round' ? 'Circular' : 'Linear'}</span>
-        </div>
+      {/* Grid Principal: Visão Geral de Todas as Partes (Esquerda) + Spotlight Ativo (Direita) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Painel Esquerdo: Receita Completa de Todas as Partes do Amigurumi */}
+        {showFullPatternSidebar && (
+          <div className="lg:col-span-4 space-y-4 bg-white dark:bg-stone-800 rounded-3xl border border-cream-200 dark:border-stone-700 p-5 shadow-sm max-h-[750px] overflow-y-auto">
+            <div className="flex items-center justify-between pb-2 border-b border-cream-200 dark:border-stone-700">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-terracotta-500" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700 dark:text-stone-300">
+                  Receita do Amigurumi Completo
+                </h3>
+              </div>
+              <span className="text-[11px] text-stone-400 font-mono">
+                {project.parts.length} peças
+              </span>
+            </div>
 
-        {/* Instrução Principal em Tipografia Enorme */}
-        <div className="space-y-2">
-          <h1 className="text-3xl sm:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tight leading-tight">
-            {currentRow.instructionText}
-          </h1>
-          {currentRow.notes && (
-            <p className="text-sm sm:text-base text-stone-500 dark:text-stone-400 italic">
-              💡 {currentRow.notes}
-            </p>
-          )}
-        </div>
+            {/* Alternador de Peças */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+              {project.parts.map((p) => {
+                const isActivePart = p.id === part.id;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => setActivePartId(p.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                      isActivePart
+                        ? 'bg-terracotta-500 text-white shadow-sm'
+                        : 'bg-cream-100 dark:bg-stone-900 text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                    }`}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: p.color }}
+                    />
+                    <span>{p.name}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-        {/* Contador de Ponto Atual em Destaque */}
-        <div className="flex flex-col items-center justify-center gap-2 pt-2">
-          <div className="text-4xl sm:text-6xl font-black font-mono text-terracotta-600 dark:text-terracotta-400 tracking-tight">
-            Ponto {currentStitchIndex + 1}
-            <span className="text-xl sm:text-3xl text-stone-400 font-normal"> / {totalStitchesInRow}</span>
+            {/* Lista de Carreiras da Peça Selecionada */}
+            <div className="space-y-1.5 pt-1">
+              {part.rows.map((r, idx) => {
+                const isCurrent = idx === currentRowIndex;
+                const isCompleted = idx < currentRowIndex;
+
+                return (
+                  <div
+                    key={r.rowNumber}
+                    onClick={() => handleJumpToRow(idx)}
+                    className={`flex items-center justify-between gap-2 p-2.5 rounded-xl text-xs cursor-pointer transition-all border ${
+                      isCurrent
+                        ? 'bg-terracotta-50 dark:bg-terracotta-950/40 border-terracotta-400 text-stone-900 dark:text-white font-bold shadow-sm'
+                        : isCompleted
+                        ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/40 text-stone-600 dark:text-stone-400 opacity-80'
+                        : 'bg-cream-50/50 dark:bg-stone-900/40 border-cream-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 hover:bg-cream-100 dark:hover:bg-stone-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      {isCompleted ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      ) : (
+                        <span
+                          className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono font-bold flex-shrink-0 ${
+                            isCurrent
+                              ? 'bg-terracotta-500 text-white'
+                              : 'bg-cream-200 dark:bg-stone-700 text-stone-600 dark:text-stone-300'
+                          }`}
+                        >
+                          {r.rowNumber}
+                        </span>
+                      )}
+                      <span className="truncate">{r.instructionText}</span>
+                    </div>
+
+                    <span className="font-mono text-[10px] opacity-75 flex-shrink-0">
+                      {r.stitchCount} pts
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Painel Central/Direito: Spotlight da Carreira Ativa & Controles Gigantes */}
+        <div className={`${showFullPatternSidebar ? 'lg:col-span-8' : 'lg:col-span-12'} space-y-6`}>
+          {/* Cartão Gigante de Execução */}
+          <div className="bg-white dark:bg-stone-800/90 rounded-3xl border-2 border-cream-300 dark:border-stone-700 p-6 sm:p-10 shadow-lg text-center space-y-6 relative overflow-hidden">
+            {/* Status de Play/Pause Flutuante */}
+            <div className="flex items-center justify-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                  trackerIsPlaying
+                    ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-200'
+                    : 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200'
+                }`}
+              >
+                {trackerIsPlaying ? '▶️ Em Execução' : '⏸️ Pausado'}
+              </span>
+
+              <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                Carreira {currentRow.rowNumber} de {totalRows} ({currentRow.type === 'round' ? 'Circular' : 'Linear'})
+              </span>
+            </div>
+
+            {/* Instrução Principal em Tipografia Enorme */}
+            <div className="space-y-3">
+              <h1 className="text-3xl sm:text-5xl font-black text-stone-900 dark:text-stone-50 tracking-tight leading-tight">
+                {currentRow.instructionText}
+              </h1>
+
+              {/* Badges Clicáveis dos Pontos da Carreira -> Abrem Tutoriais Imediatamente */}
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                {currentRow.stitches.map((step, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveHelpStitch(step.type)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-terracotta-50 dark:bg-terracotta-950/40 hover:bg-terracotta-100 dark:hover:bg-terracotta-900/60 border border-terracotta-200 dark:border-terracotta-800 text-terracotta-700 dark:text-terracotta-300 text-xs font-bold transition-all hover:scale-105 active:scale-95 shadow-sm"
+                    title={`Ver como tecer ${step.type.toUpperCase()}`}
+                  >
+                    <span>{step.count}x</span>
+                    <span className="uppercase">{step.type}</span>
+                    <HelpCircle className="w-3.5 h-3.5 opacity-70" />
+                  </button>
+                ))}
+              </div>
+
+              {currentRow.notes && (
+                <p className="text-sm sm:text-base text-amber-900 dark:text-amber-200 bg-amber-50 dark:bg-amber-950/40 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800 font-medium">
+                  💡 <b>Dica:</b> {currentRow.notes}
+                </p>
+              )}
+            </div>
+
+            {/* Contador de Ponto Atual em Destaque */}
+            <div className="flex flex-col items-center justify-center gap-2 pt-2">
+              <div className="text-4xl sm:text-6xl font-black font-mono text-terracotta-600 dark:text-terracotta-400 tracking-tight">
+                Ponto {currentStitchIndex + 1}
+                <span className="text-xl sm:text-3xl text-stone-400 font-normal"> / {totalStitchesInRow}</span>
+              </div>
+
+              {/* Barra de Progresso da Carreira */}
+              <div className="w-full max-w-md h-3.5 bg-cream-200 dark:bg-stone-700 rounded-full overflow-hidden mt-2">
+                <div
+                  className="h-full bg-gradient-to-r from-terracotta-500 to-amber-400 transition-all duration-300 rounded-full"
+                  style={{ width: `${rowProgressPct}%` }}
+                />
+              </div>
+              <div className="text-xs text-stone-500 font-medium">
+                {rowProgressPct}% da carreira concluído
+              </div>
+            </div>
+
+            {/* Botões de Ação Gigantes */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
+              <button
+                onClick={handleRewind}
+                className="flex items-center justify-center gap-2 py-4 px-6 rounded-2xl border-2 border-stone-200 dark:border-stone-700 bg-cream-50 dark:bg-stone-900 hover:bg-cream-100 text-stone-700 dark:text-stone-200 font-bold text-sm sm:text-base active:scale-95 transition-all shadow-sm"
+              >
+                <ChevronLeft className="w-5 h-5" />
+                <span>Voltar [←]</span>
+              </button>
+
+              <button
+                onClick={handleAdvance}
+                className="flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-terracotta-500 hover:bg-terracotta-600 active:scale-95 text-white font-extrabold text-base sm:text-lg shadow-lg shadow-terracotta-500/30 transition-all hover:scale-[1.02]"
+              >
+                <span>Avançar Ponto</span>
+                <ChevronRight className="w-6 h-6" />
+              </button>
+
+              <button
+                onClick={speakCurrent}
+                className="flex items-center justify-center gap-2 py-4 px-6 rounded-2xl border-2 border-stone-200 dark:border-stone-700 bg-cream-50 dark:bg-stone-900 hover:bg-cream-100 text-stone-700 dark:text-stone-200 font-bold text-sm sm:text-base active:scale-95 transition-all shadow-sm"
+              >
+                <Volume2 className="w-5 h-5 text-terracotta-500" />
+                <span>Repetir [R]</span>
+              </button>
+            </div>
           </div>
 
-          {/* Barra de Progresso da Carreira */}
-          <div className="w-full max-w-md h-3 bg-cream-200 dark:bg-stone-700 rounded-full overflow-hidden mt-2">
-            <div
-              className="h-full bg-gradient-to-r from-terracotta-500 to-amber-400 transition-all duration-300"
-              style={{ width: `${rowProgressPct}%` }}
-            />
-          </div>
-          <div className="text-xs text-stone-500 font-medium">
-            {rowProgressPct}% da carreira concluído
-          </div>
-        </div>
+          {/* Mini-Mapa 3D & Navegação Rápida */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <MiniMap3D />
+            </div>
+            <div className="bg-white dark:bg-stone-800/90 rounded-2xl border border-cream-200 dark:border-stone-700 p-4 space-y-3">
+              <h4 className="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">
+                Navegação Rápida entre Carreiras
+              </h4>
+              <div className="flex items-center justify-between gap-2">
+                <button
+                  onClick={rewindRow}
+                  className="flex-1 py-2.5 rounded-xl bg-cream-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold text-xs hover:bg-cream-200 transition-colors"
+                >
+                  ▲ Carreira Anterior
+                </button>
+                <button
+                  onClick={advanceRow}
+                  className="flex-1 py-2.5 rounded-xl bg-cream-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold text-xs hover:bg-cream-200 transition-colors"
+                >
+                  ▼ Próxima Carreira
+                </button>
+              </div>
 
-        {/* Botões de Ação Gigantes (Hands-Free / Toque Rápido) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
-          <button
-            onClick={handleRewind}
-            className="flex items-center justify-center gap-2 py-4 px-6 rounded-2xl border-2 border-stone-200 dark:border-stone-700 bg-cream-50 dark:bg-stone-900 hover:bg-cream-100 text-stone-700 dark:text-stone-200 font-bold text-sm sm:text-base active:scale-95 transition-all shadow-sm"
-          >
-            <ChevronLeft className="w-5 h-5" />
-            <span>Voltar Ponto [←]</span>
-          </button>
-
-          <button
-            onClick={handleAdvance}
-            className="flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-terracotta-500 hover:bg-terracotta-600 active:scale-95 text-white font-extrabold text-base sm:text-lg shadow-lg shadow-terracotta-500/30 transition-all hover:scale-[1.02]"
-          >
-            <span>Avançar Ponto [Espaço]</span>
-            <ChevronRight className="w-6 h-6" />
-          </button>
-
-          <button
-            onClick={speakCurrent}
-            className="flex items-center justify-center gap-2 py-4 px-6 rounded-2xl border-2 border-stone-200 dark:border-stone-700 bg-cream-50 dark:bg-stone-900 hover:bg-cream-100 text-stone-700 dark:text-stone-200 font-bold text-sm sm:text-base active:scale-95 transition-all shadow-sm"
-          >
-            <Volume2 className="w-5 h-5 text-terracotta-500" />
-            <span>Repetir [R]</span>
-          </button>
-        </div>
-
-        {/* Botão de Ajuda Rápida do Ponto */}
-        <div className="pt-2 flex justify-center">
-          <button
-            onClick={() => setActiveHelpStitch('pb')}
-            className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-terracotta-600 dark:hover:text-terracotta-400 font-medium transition-colors"
-          >
-            <HelpCircle className="w-4 h-4" />
-            <span>Dúvida sobre o ponto? Ver tutorial passo a passo [?]</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Mini-Mapa 3D & Atalhos de Navegação */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <MiniMap3D />
-        </div>
-        <div className="bg-white dark:bg-stone-800/90 rounded-xl border border-cream-200 dark:border-stone-700 p-4 space-y-3">
-          <h4 className="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">
-            Navegação Rápida entre Carreiras
-          </h4>
-          <div className="flex items-center justify-between gap-2">
-            <button
-              onClick={rewindRow}
-              className="flex-1 py-2 rounded-lg bg-cream-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 font-semibold text-xs hover:bg-cream-200 transition-colors"
-            >
-              ▲ Carreira Anterior
-            </button>
-            <button
-              onClick={advanceRow}
-              className="flex-1 py-2 rounded-lg bg-cream-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 font-semibold text-xs hover:bg-cream-200 transition-colors"
-            >
-              ▼ Próxima Carreira
-            </button>
-          </div>
-
-          <div className="text-[11px] text-stone-500 space-y-1 pt-1">
-            <p>⌨️ <b>Teclado:</b> Espaço / Seta Direita para avançar; Seta Esquerda para voltar; R para ouvir de novo.</p>
-            <p>🎙️ <b>Comandos de voz:</b> "Próximo", "Voltar", "Repetir", "Ajuda".</p>
+              <div className="text-[11px] text-stone-500 dark:text-stone-400 space-y-1 pt-1">
+                <p>⌨️ <b>Teclado:</b> Espaço alterna Play/Pause; Seta Direita avança ponto; Seta Esquerda volta ponto; R ouve instrução.</p>
+                <p>🎙️ <b>Comandos de voz:</b> "Próximo", "Voltar", "Repetir", "Ajuda".</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -358,7 +528,7 @@ export const LiveTrackerView: React.FC = () => {
         </div>
       )}
 
-      {/* Modal de Tutorial Rápido */}
+      {/* Modal de Tutorial Rápido com SVG */}
       {activeHelpStitch && (
         <StitchDetailModal
           stitchType={activeHelpStitch}

@@ -4,12 +4,15 @@ import { useCrochetStore } from '@/store/useCrochetStore';
 import { ProjectCard } from './ProjectCard';
 
 export const MyProjectsTab: React.FC = () => {
-  const { projects, createProject } = useCrochetStore();
+  const { projects, createProject, setActiveProjectId, setViewTab, setCreationSubTab } = useCrochetStore();
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const title = prompt('Título do Novo Projeto:', 'Novo Amigurumi');
     if (title) {
-      createProject(title.trim());
+      const newId = await createProject(title.trim());
+      setActiveProjectId(newId);
+      setCreationSubTab('studio');
+      setViewTab('creation');
     }
   };
 

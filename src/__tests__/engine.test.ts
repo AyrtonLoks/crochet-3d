@@ -57,6 +57,11 @@ describe('RecipeToMesh', () => {
     expect(geom.getAttribute('normal')).toBeDefined();
     expect(geom.getAttribute('uv')).toBeDefined();
     expect(geom.getIndex()).toBeDefined();
+
+    // Deve possuir polos fechados (número de triângulos > 0 e índices válidos)
+    const indices = geom.getIndex();
+    expect(indices).not.toBeNull();
+    expect(indices!.count).toBeGreaterThan(100);
   });
 });
 

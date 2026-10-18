@@ -37,6 +37,12 @@ export const PRESET_PROJECTS: CrochetProject[] = [
       isBookmarkedByCurrentUser: true,
       makesCount: 18,
     },
+    totalStitchesEstimated: 512,
+    galleryPhotos: [
+      'https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=600&q=80',
+    ],
     parts: [
       {
         id: 'part-polvo-cabeca',
@@ -278,6 +284,11 @@ export const PRESET_PROJECTS: CrochetProject[] = [
       isBookmarkedByCurrentUser: true,
       makesCount: 12,
     },
+    totalStitchesEstimated: 246,
+    galleryPhotos: [
+      'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=600&q=80',
+    ],
     parts: [
       {
         id: 'part-coracao-cupula-1',
@@ -381,6 +392,11 @@ export const PRESET_PROJECTS: CrochetProject[] = [
       likesCount: 0,
       makesCount: 0,
     },
+    totalStitchesEstimated: 2000,
+    galleryPhotos: [
+      'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=600&q=80',
+    ],
     parts: [
       {
         id: 'part-gorro-corpo',
@@ -449,6 +465,11 @@ export const PRESET_PROJECTS: CrochetProject[] = [
       isBookmarkedByCurrentUser: true,
       makesCount: 34,
     },
+    totalStitchesEstimated: 450,
+    galleryPhotos: [
+      'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=600&q=80',
+    ],
     parts: [
       {
         id: 'part-bolsa-frente',

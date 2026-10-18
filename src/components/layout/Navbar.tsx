@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   Box,
-  FileText,
   PlayCircle,
   BookOpen,
   FolderHeart,
@@ -11,16 +10,18 @@ import {
   Moon,
   Volume2,
   VolumeX,
+  UserCheck,
 } from 'lucide-react';
 import { useCrochetStore, MainTab } from '@/store/useCrochetStore';
 import { useProfileStore } from '@/store/useProfileStore';
 
 interface NavbarProps {
   onOpenProfile: () => void;
+  onOpenAuth: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenProfile }) => {
-  const { viewTab, setViewTab, isMuted, setIsMuted } = useCrochetStore();
+export const Navbar: React.FC<NavbarProps> = ({ onOpenProfile, onOpenAuth }) => {
+  const { viewTab, setViewTab, isMuted, setIsMuted, setSelectedProjectDetailId } = useCrochetStore();
   const { profile } = useProfileStore();
   const [isDark, setIsDark] = useState<boolean>(false);
 
@@ -45,20 +46,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenProfile }) => {
   };
 
   const navItems: { id: MainTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'studio', label: 'Studio 3D', icon: <Box className="w-4 h-4" /> },
-    { id: 'pattern', label: 'Editor Receita', icon: <FileText className="w-4 h-4" /> },
-    { id: 'tracker', label: 'Modo Crochetagem', icon: <PlayCircle className="w-4 h-4" /> },
-    { id: 'learn', label: 'Tutoriais', icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'shelf', label: 'Prateleira', icon: <FolderHeart className="w-4 h-4" /> },
     { id: 'community', label: 'Comunidade', icon: <Users className="w-4 h-4" /> },
+    { id: 'shelf', label: 'Prateleira', icon: <FolderHeart className="w-4 h-4" /> },
+    { id: 'learn', label: 'Tutoriais', icon: <BookOpen className="w-4 h-4" /> },
+    { id: 'creation', label: 'Criação', icon: <Box className="w-4 h-4" /> },
+    { id: 'tracker', label: 'Modo Crochetagem', icon: <PlayCircle className="w-4 h-4" /> },
   ];
 
+  const handleTabClick = (tabId: MainTab) => {
+    setSelectedProjectDetailId(null);
+    setViewTab(tabId);
+  };
+
   return (
-    <header className="sticky top-0 z-40 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-cream-200 dark:border-stone-800 transition-colors">
+    <header className="sticky top-0 z-40 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-cream-200 dark:border-stone-800 transition-colors shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand / Logo */}
         <div
-          onClick={() => setViewTab('studio')}
+          onClick={() => handleTabClick('community')}
           className="flex items-center gap-2.5 cursor-pointer group"
         >
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-terracotta-500 to-terracotta-400 text-white flex items-center justify-center shadow-md shadow-terracotta-500/20 group-hover:scale-105 transition-transform">
@@ -75,14 +80,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenProfile }) => {
           </div>
         </div>
 
-        {/* Central Navigation Tabs */}
+        {/* Central Navigation Tabs (Ordem: 1. Comunidade -> 2. Prateleira -> 3. Tutoriais -> 4. Criação -> 5. Tracker) */}
         <nav className="hidden md:flex items-center gap-1 bg-cream-100/70 dark:bg-stone-800/70 p-1 rounded-xl border border-cream-200 dark:border-stone-700">
           {navItems.map((item) => {
             const isActive = viewTab === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => setViewTab(item.id)}
+                onClick={() => handleTabClick(item.id)}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   isActive
                     ? 'bg-white dark:bg-stone-900 text-terracotta-600 dark:text-terracotta-400 shadow-sm border border-stone-200/50 dark:border-stone-700'
@@ -116,6 +121,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenProfile }) => {
             {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
           </button>
 
+          {/* Botão de Alternar Contas */}
+          <button
+            onClick={onOpenAuth}
+            title="Alternar conta ou criar novo artesão"
+            className="p-2 rounded-xl border border-cream-300 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-cream-100 dark:hover:bg-stone-800 transition-colors"
+          >
+            <UserCheck className="w-4 h-4 text-terracotta-500" />
+          </button>
+
           {/* Profile Button */}
           <button
             onClick={onOpenProfile}
@@ -145,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenProfile }) => {
           return (
             <button
               key={item.id}
-              onClick={() => setViewTab(item.id)}
+              onClick={() => handleTabClick(item.id)}
               className={`flex flex-col items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium whitespace-nowrap ${
                 isActive
                   ? 'text-terracotta-600 dark:text-terracotta-400 font-bold'

@@ -3,6 +3,7 @@ import { X, HelpCircle, Check, Info } from 'lucide-react';
 import { StitchType } from '@/types/crochet';
 import { STITCH_TUTORIALS } from '@/data/tutorialDatabase';
 import { useProfileStore } from '@/store/useProfileStore';
+import { StitchSvgDiagram } from '@/components/learn/StitchSvgDiagram';
 
 interface StitchDetailModalProps {
   stitchType: StitchType | null;
@@ -45,10 +46,18 @@ export const StitchDetailModal: React.FC<StitchDetailModalProps> = ({ stitchType
           {tutorial.description}
         </p>
 
+        {/* Ilustração Vetorial SVG Passo a Passo */}
+        <div className="py-1">
+          <StitchSvgDiagram
+            stitchId={stitchType}
+            isLeftHanded={profile.dominantHand === 'left'}
+          />
+        </div>
+
         {/* Passo a Passo */}
         <div className="space-y-2">
           <h4 className="text-xs font-bold text-terracotta-700 dark:text-terracotta-300 uppercase tracking-wider">
-            Instruções Passo a Passo ({profile.dominantHand === 'left' ? 'Canhoto' : 'Destro'})
+            Instruções Passo a Passo ({profile.dominantHand === 'left' ? 'Canhoto 🖐️' : 'Destro ✋'})
           </h4>
           <div className="space-y-1.5">
             {instructions.map((step, idx) => (
@@ -62,14 +71,14 @@ export const StitchDetailModal: React.FC<StitchDetailModalProps> = ({ stitchType
           </div>
         </div>
 
-        {/* Dicas */}
+        {/* Dicas de Mestre com Alto Contraste */}
         {tutorial.tips && tutorial.tips.length > 0 && (
-          <div className="bg-sage-50 dark:bg-sage-950/40 p-3 rounded-xl border border-sage-200 dark:border-sage-800 space-y-1 text-xs text-sage-800 dark:text-sage-200">
-            <div className="font-bold flex items-center gap-1.5">
-              <Info className="w-3.5 h-3.5 text-sage-600" /> Dica de Mestre:
+          <div className="bg-amber-50 dark:bg-amber-950/50 p-3 rounded-xl border border-amber-300 dark:border-amber-700 space-y-1 text-xs text-amber-900 dark:text-amber-100">
+            <div className="font-bold flex items-center gap-1.5 text-amber-800 dark:text-amber-200">
+              <Info className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" /> Dica de Mestre:
             </div>
             {tutorial.tips.map((tip, i) => (
-              <p key={i} className="text-[11px] leading-relaxed">• {tip}</p>
+              <p key={i} className="text-[11px] leading-relaxed font-medium">• {tip}</p>
             ))}
           </div>
         )}

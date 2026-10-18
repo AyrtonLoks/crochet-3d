@@ -40,27 +40,28 @@ const fragmentShader = `
     vec3 normal = normalize(vNormal);
     vec3 viewDir = normalize(vViewPosition);
 
-    // Ondulações procedurais do ponto de crochê (laçadas em "V" entrelaçadas)
-    float rowWave = sin(vUv.y * uStitchScale.y);
-    float stitchWave = cos(vUv.x * uStitchScale.x + rowWave * 1.2);
-    float tactileRelief = (stitchWave * 0.5 + 0.5) * (rowWave * 0.4 + 0.6);
+    // Textura tátil sutil de pontos de crochê (malha aconchegante sem distorções líquidas)
+    float stitchU = vUv.x * uStitchScale.x;
+    float stitchV = vUv.y * uStitchScale.y;
+    float wavePattern = sin(stitchU * 2.0) * cos(stitchV * 2.0) * 0.5 + 0.5;
+    float tactileRelief = mix(0.92, 1.08, wavePattern);
 
-    // Efeito de sombra e relevo na fibra do fio
+    // Iluminação difusa acolhedora (Wrap Diffuse Lighting)
     vec3 lightDir = normalize(uLightDir);
-    float diffuse = max(dot(normal, lightDir), 0.2);
-    float yarnShadow = mix(0.75, 1.15, tactileRelief);
+    float NdotL = dot(normal, lightDir);
+    float wrapDiffuse = max((NdotL + 0.35) / 1.35, 0.4);
 
-    // Efeito aveludado / pilosidade do fio (Fresnel halo / sheen)
-    float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.2);
-    vec3 haloFuzz = vec3(1.0) * fresnel * uFuzziness * 0.6;
+    // Efeito aveludado / penugem sutil de fibra têxtil (Fresnel Sheen)
+    float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.8);
+    vec3 haloFuzz = vec3(1.0, 0.98, 0.95) * fresnel * uFuzziness * 0.45;
 
-    // Cor base mesclada com relevo tátil
-    vec3 baseCol = uColor * diffuse * yarnShadow;
+    // Cor base iluminada
+    vec3 baseCol = uColor * wrapDiffuse * tactileRelief;
     vec3 finalColor = baseCol + haloFuzz;
 
     // Destaque quando o ponto/carreira estiver selecionado
     if (uIsHighlighted > 0.5) {
-      finalColor = mix(finalColor, uHighlightColor, 0.45 + 0.25 * sin(tactileRelief * 6.28));
+      finalColor = mix(finalColor, uHighlightColor, 0.55 + 0.15 * sin(wavePattern * 6.28));
     }
 
     gl_FragColor = vec4(finalColor, 1.0);

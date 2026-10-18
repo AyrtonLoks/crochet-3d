@@ -15,24 +15,33 @@ export const CommunityProjectCard: React.FC<CommunityProjectCardProps> = ({
   onSelectArtisan,
 }) => {
   const { toggleLike, isLiked, toggleBookmark, isBookmarked } = useSocialStore();
-  const { setActiveProjectId, setViewTab } = useCrochetStore();
+  const { setActiveProjectId, setViewTab, setSelectedProjectDetailId } = useCrochetStore();
 
   const liked = isLiked(project.id);
   const bookmarked = isBookmarked(project.id);
   const likesCount = (project.social?.likesCount || 0) + (liked ? 1 : 0);
 
-  const handleOpenStudio = () => {
-    setActiveProjectId(project.id);
-    setViewTab('studio');
+  const handleOpenDetail = () => {
+    setSelectedProjectDetailId(project.id);
   };
 
-  const handleOpenTracker = () => {
+  const handleOpenStudio = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveProjectId(project.id);
+    setViewTab('creation');
+  };
+
+  const handleOpenTracker = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setActiveProjectId(project.id);
     setViewTab('tracker');
   };
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-3xl border border-cream-200 dark:border-stone-700 overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group">
+    <div
+      onClick={handleOpenDetail}
+      className="bg-white dark:bg-stone-800 rounded-3xl border border-cream-200 dark:border-stone-700 overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group cursor-pointer"
+    >
       <div>
         {/* Imagem / Capa */}
         <div className="relative h-48 w-full bg-cream-100 dark:bg-stone-900 overflow-hidden">

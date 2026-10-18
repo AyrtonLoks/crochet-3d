@@ -27,28 +27,37 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   sharedPermission,
   allowPdfDownload = true,
 }) => {
-  const { setActiveProjectId, setViewTab, deleteProject } = useCrochetStore();
+  const { setActiveProjectId, setViewTab, deleteProject, setSelectedProjectDetailId } = useCrochetStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const totalRows = project.parts.reduce((sum, p) => sum + p.rows.length, 0);
-  const totalStitches = project.parts.reduce(
-    (sum, p) => sum + p.rows.reduce((s, r) => s + (r.stitchCount || 0), 0),
-    0
-  );
+  const totalStitches =
+    project.totalStitchesEstimated ||
+    project.parts.reduce(
+      (sum, p) => sum + p.rows.reduce((s, r) => s + (r.stitchCount || 0), 0),
+      0
+    );
 
   const canDownloadPdf = !isSharedWithMe || allowPdfDownload !== false;
 
-  const handleOpenStudio = () => {
-    setActiveProjectId(project.id);
-    setViewTab('studio');
+  const handleOpenDetail = () => {
+    setSelectedProjectDetailId(project.id);
   };
 
-  const handleOpenTracker = () => {
+  const handleOpenStudio = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveProjectId(project.id);
+    setViewTab('creation');
+  };
+
+  const handleOpenTracker = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setActiveProjectId(project.id);
     setViewTab('tracker');
   };
 
-  const handleExportPdf = () => {
+  const handleExportPdf = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!canDownloadPdf) {
       alert('O criador desta receita não autorizou o download do PDF.');
       return;
@@ -57,7 +66,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-2xl border border-cream-200 dark:border-stone-700 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+    <div
+      onClick={handleOpenDetail}
+      className="bg-white dark:bg-stone-800 rounded-2xl border border-cream-200 dark:border-stone-700 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
+    >
       <div>
         {/* Imagem / Capa */}
         <div className="relative h-44 w-full bg-cream-100 dark:bg-stone-900 overflow-hidden">
@@ -124,7 +136,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
           <div className="flex items-center justify-between text-[11px] text-stone-500 dark:text-stone-400 pt-1 border-t border-cream-100 dark:border-stone-700/60">
             <span>{project.parts.length} partes • {totalRows} carr</span>
-            <span>~{totalStitches} pontos</span>
+            <span className="font-semibold text-terracotta-600 dark:text-terracotta-400">🧶 {totalStitches} pontos</span>
           </div>
 
           {/* Créditos do Designer */}

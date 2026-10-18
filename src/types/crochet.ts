@@ -24,6 +24,9 @@ export interface StitchInfo {
   yarnFactor: number;       // Consumo relativo de fio em cm
 }
 
+export type MainTab = 'community' | 'shelf' | 'learn' | 'creation' | 'tracker';
+export type CreationSubTab = 'studio' | 'pattern';
+
 export type DominantHand = 'right' | 'left';
 export type SkillLevel = 'beginner' | 'intermediate' | 'advanced';
 export type ProjectCategory = 'amigurumi' | 'clothing' | 'bags' | 'home' | 'other';
@@ -192,6 +195,8 @@ export interface CrochetProject {
   };
 
   parts: ProjectPart[];
+  galleryPhotos?: string[];
+  totalStitchesEstimated?: number;
   materials: {
     yarns: {
       yarnId: string;
@@ -210,6 +215,13 @@ export interface CrochetProject {
   };
 }
 
+export interface StitchTutorialStep {
+  stepNumber: number;
+  title: string;
+  description: string;
+  diagramKey?: string;
+}
+
 export interface StitchTutorial {
   id: StitchType;
   namePt: string;
@@ -219,6 +231,9 @@ export interface StitchTutorial {
   difficulty: 'iniciante' | 'intermediario' | 'avancado';
   category: 'basico' | 'altos' | 'modificadores' | 'inicio';
   description: string;
+  symbolPt?: string;
+  symbolUs?: string;
+  steps?: StitchTutorialStep[];
   rightHandInstructions: string[];
   leftHandInstructions: string[];
   tips: string[];
