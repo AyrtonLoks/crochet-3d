@@ -307,7 +307,7 @@ crochet-3d/
 │   │   └── textures/                  # Texturas base de fios e normais PBR
 │   ├── components/
 │   │   ├── layout/
-│   │   │   ├── Navbar.tsx             # 5 Abas: Comunidade, Prateleira, Tutoriais, Criação, Modo Crochetagem
+│   │   │   ├── Navbar.tsx             # 4 Abas: Comunidade, Prateleira, Criação, Tutoriais
 │   │   │   └── Footer.tsx
 │   │   ├── auth/
 │   │   │   └── AuthModal.tsx          # Gestor de multi-perfis com alternância instantânea
@@ -321,25 +321,25 @@ crochet-3d/
 │   │   │   ├── ShareAccessModal.tsx      # Modal de permissões privadas (@handle ou token)
 │   │   │   └── RedeemTokenModal.tsx      # Resgate de link/chave de acesso
 │   │   ├── project/
-│   │   │   └── ProjectDetailView.tsx     # Tela completa de receita: foto, materiais, 3D e tracker
-│   │   ├── learn/                     # Aba 3: Tutoriais & Dicionário de Pontos
-│   │   │   ├── StitchDictionary.tsx      # Dicionário com busca rápida e filtro por nível
-│   │   │   ├── StitchSvgDiagram.tsx      # Diagramas vetoriais SVG com espelhamento para canhotos
-│   │   │   └── YarnNeedleGuide.tsx       # Tabela de compatibilidade de fios, agulhas e amostra
-│   │   ├── studio/                    # Aba 4 (Sub-aba 1): Modelador 3D Paramétrico
+│   │   │   └── ProjectDetailView.tsx     # Tela completa de receita: foto, materiais, 3D e tracker integrado
+│   │   ├── studio/                    # Aba 3 (Sub-aba 1 de Criação): Modelador 3D Paramétrico
 │   │   │   ├── Viewport3D.tsx            # Viewport Three.js com iluminação de estúdio
 │   │   │   ├── PrimitiveControls.tsx     # Adição de primitivas paramétricas em centímetros
 │   │   │   ├── TransformGizmo.tsx        # Gizmo de Mover, Rotacionar e Escalar
 │   │   │   ├── PartsList.tsx             # Lista de peças (duplicar, colorir, ocultar, deletar)
 │   │   │   └── ImportModal.tsx           # Importação de GLB/GLTF/OBJ com decimação automática
-│   │   ├── pattern/                   # Aba 4 (Sub-aba 2): Editor e Tradutor de Receitas
+│   │   ├── pattern/                   # Aba 3 (Sub-aba 2 de Criação): Editor e Tradutor de Receitas
 │   │   │   ├── PatternTextEditor.tsx     # Editor de texto com tradução automática pt-BR <-> US
 │   │   │   ├── PatternRowTable.tsx       # Tabela visual carreira a carreira com validação
 │   │   │   └── ValidationBadge.tsx       # Alertas de discrepância matemática de pontos
-│   │   ├── tracker/                   # Aba 5: Modo Crochetagem (Hands-Free Live Tracker)
+│   │   ├── tracker/                   # Modo Crochetagem (Sub-aba 3 de Criação & Tela Integrada do Modelo)
 │   │   │   ├── LiveTrackerView.tsx       # Execução guiada com Play/Pause, drawer e badges clicáveis
 │   │   │   ├── MiniMap3D.tsx             # Miniatura 3D sincronizada com carreira destacada
 │   │   │   └── VoiceController.tsx       # Indicador de escuta do microfone e comandos de voz
+│   │   ├── learn/                     # Aba 4: Tutoriais & Dicionário de Pontos
+│   │   │   ├── StitchDictionary.tsx      # Dicionário com busca rápida e filtro por nível
+│   │   │   ├── StitchSvgDiagram.tsx      # Diagramas vetoriais SVG com espelhamento para canhotos
+│   │   │   └── YarnNeedleGuide.tsx       # Tabela de compatibilidade de fios, agulhas e amostra
 │   │   └── profile/
 │   │       └── ProfileModal.tsx          # Edição de perfil, mão dominante e estatísticas
 │   ├── core/

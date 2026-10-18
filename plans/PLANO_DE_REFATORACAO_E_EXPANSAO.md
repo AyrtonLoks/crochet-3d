@@ -7,12 +7,12 @@ Este documento consolida o plano de engenharia aprofundado para a execução com
 ## 1. Goal Description
 
 Elevar a aplicação ao estado de maturidade de produto, corrigindo gargalos de usabilidade e implementando os fluxos completos:
-1. **Nova Hierarquia de Navegação**:
+1. **Hierarquia de Navegação Consolidada (4 Abas Estritas)**:
    - `1. 🌐 Comunidade` (Home / Vitrine Inicial de Inspiração)
    - `2. 🏠 Prateleira` (Meus Projetos, Compartilhados Comigo e Favoritos)
-   - `3. 📚 Tutoriais` (Dicionário de Pontos Ilustrado com SVGs e Guia de Fios/Agulhas)
-   - `4. 🎨 Criação` (Hub unificado contendo o **Studio 3D** e o **Editor de Receita**)
-   - `5. ▶️ Modo Crochetagem` (Live Tracker com Play/Pause, visão de todas as partes e badges de pontos)
+   - `3. 🎨 Criação` (Hub unificado com **Studio 3D**, **Editor de Receita** e **Modo Crochetagem**)
+   - `4. 📚 Tutoriais` (Dicionário de Pontos Ilustrado com SVGs e Guia de Fios/Agulhas)
+   *(O Modo Crochetagem é contextualizado como a 3ª sub-aba da Criação e na Tela Dedicada do Modelo)*
 2. **Tela Dedicada de Apresentação de Receitas (`ProjectDetailView`)**: Abrir ao clicar em qualquer card com foto grande, materiais detalhados, ações rápidas e receita completa formatada.
 3. **Modo Crochetagem Hands-Free Controlado**: Barra com Play/Pause explícito (nunca fala sozinho), layout com a receita inteira de todas as partes do amigurumi e badges clicáveis dos pontos da volta com popovers de tutoriais.
 4. **Motor 3D Orgânico & Low-Poly Cartunesco**: Eliminar bicos cônicos e piões pontudos no anel mágico, gerando formas suaves e anatômicas com textura têxtil sutil e aconchegante.
@@ -28,15 +28,15 @@ Elevar a aplicação ao estado de maturidade de produto, corrigindo gargalos de 
 
 > [!IMPORTANT]
 > **Ordem Definitiva da Barra de Navegação:**
-> `1. 🌐 Comunidade` $\rightarrow$ `2. 🏠 Prateleira` $\rightarrow$ `3. 📚 Tutoriais` $\rightarrow$ `4. 🎨 Criação` $\rightarrow$ `5. ▶️ Modo Crochetagem`.
-> - O acesso à criação é unificado sob uma única aba **Criação**, com alternador no topo entre **Studio 3D** e **Editor de Receita**.
-> - Ao clicar em qualquer card (na Comunidade ou na Prateleira), abre a **Tela de Detalhes da Receita**, sem disparar áudio automático.
+> `1. 🌐 Comunidade` $\rightarrow$ `2. 🏠 Prateleira` $\rightarrow$ `3. 🎨 Criação` $\rightarrow$ `4. 📚 Tutoriais`.
+> - O acesso à criação é unificado sob a aba **Criação**, contendo 3 sub-abas: **Studio 3D**, **Editor de Receita** e **Modo Crochetagem**.
+> - Ao clicar em qualquer card (na Comunidade ou na Prateleira), abre a **Tela de Detalhes da Receita**, que permite alternar internamente para o Modo Crochetagem.
 
 ---
 
 ## 3. Open Questions
 
-Nenhuma questão em aberto. Todas as decisões de ordem, design e arquitetura foram acordadas.
+Nenhuma questão em aberto. Todas as decisões de ordem, design e arquitetura foram acordadas e homologadas.
 
 ---
 
@@ -46,9 +46,8 @@ Nenhuma questão em aberto. Todas as decisões de ordem, design e arquitetura fo
 flowchart TD
     subgraph NavFlow ["1. Navegação Reordenada"]
         T1["1. 🌐 Comunidade"] --> T2["2. 🏠 Prateleira"]
-        T2 --> T3["3. 📚 Tutoriais"]
-        T3 --> T4["4. 🎨 Criação (Studio + Editor)"]
-        T4 --> T5["5. ▶️ Modo Crochetagem"]
+        T2 --> T3["3. 🎨 Criação (Studio + Editor + Tracker)"]
+        T3 --> T4["4. 📚 Tutoriais"]
     end
 
     subgraph ViewsFlow ["2. Telas Principais"]

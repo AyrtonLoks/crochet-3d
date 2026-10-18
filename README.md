@@ -137,15 +137,15 @@ crochet-3d/
 │   │   ├── parsers.test.ts              # Testes de parsing e tradução pt-BR/US
 │   │   └── store_and_tabs.test.ts       # Testes de navegação, persistência e estados
 │   ├── components/
-│   │   ├── layout/                      # Navbar com 5 abas, Footer e Containers
+│   │   ├── layout/                      # Navbar com 4 abas, Footer e Containers
 │   │   ├── auth/                        # AuthModal (Multi-perfis com troca fluida)
 │   │   ├── community/                   # Galeria Pública, Cards e Perfil Público
 │   │   ├── shelf/                       # Meus Projetos, Compartilhados, Modais de Acesso
-│   │   ├── project/                     # ProjectDetailView (Apresentação completa da receita)
+│   │   ├── project/                     # ProjectDetailView (Apresentação e Modo Crochetagem integrado)
+│   │   ├── studio/                      # Hub de Criação (Sub-aba 1): Viewport 3D, Gizmo, Primitivas
+│   │   ├── pattern/                     # Hub de Criação (Sub-aba 2): Editor de Texto, PatternTranslator
+│   │   ├── tracker/                     # Hub de Criação (Sub-aba 3) & Modo Crochetagem Integrado
 │   │   ├── learn/                       # Dicionário de Pontos, StitchSvgDiagram, Guia de Fios
-│   │   ├── studio/                      # Viewport 3D, Gizmo, Primitivas, Importador
-│   │   ├── pattern/                     # Editor de Texto, PatternTranslator, Validação
-│   │   ├── tracker/                     # Modo Crochetagem com Play/Pause e Drawer
 │   │   └── profile/                     # Perfil do Artesão, Destro/Canhoto, Badges
 │   ├── core/
 │   │   ├── audio/                       # SpeechSynthesizer, SpeechRecognizer, SoundEffects
