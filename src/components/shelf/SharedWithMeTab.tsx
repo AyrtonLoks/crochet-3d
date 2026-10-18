@@ -6,7 +6,7 @@ import { ProjectCard } from './ProjectCard';
 import { RedeemTokenModal } from './RedeemTokenModal';
 
 export const SharedWithMeTab: React.FC = () => {
-  const { projects, setActiveProjectId, setViewTab } = useCrochetStore();
+  const { projects, openProjectInTracker } = useCrochetStore();
   const { redeemedProjects } = useSocialStore();
   const [isRedeemOpen, setIsRedeemOpen] = useState(false);
 
@@ -91,8 +91,7 @@ export const SharedWithMeTab: React.FC = () => {
         isOpen={isRedeemOpen}
         onClose={() => setIsRedeemOpen(false)}
         onSuccess={(id) => {
-          setActiveProjectId(id);
-          setViewTab('tracker');
+          openProjectInTracker(id);
         }}
       />
     </div>

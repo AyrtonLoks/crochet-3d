@@ -17,7 +17,7 @@ import { ProfileModal } from '@/components/profile/ProfileModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { useCrochetStore } from '@/store/useCrochetStore';
 import { useProfileStore } from '@/store/useProfileStore';
-import { FileText, Table, BookOpen, Ruler, Box } from 'lucide-react';
+import { FileText, Table, BookOpen, Ruler, Box, PlayCircle } from 'lucide-react';
 
 export const App: React.FC = () => {
   const {
@@ -60,43 +60,10 @@ export const App: React.FC = () => {
             {/* TAB 2: PRATELEIRA (Meus Projetos, Compartilhados & Favoritos) */}
             {viewTab === 'shelf' && <ProjectShelfView />}
 
-            {/* TAB 3: TUTORIAIS & GUIA DE FIOS */}
-            {viewTab === 'learn' && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-2 border-b border-cream-200 dark:border-stone-800 pb-2">
-                  <button
-                    onClick={() => setLearnSubTab('dictionary')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                      learnSubTab === 'dictionary'
-                        ? 'bg-terracotta-500 text-white shadow-sm'
-                        : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 hover:bg-cream-100 dark:hover:bg-stone-800'
-                    }`}
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    <span>Dicionário Ilustrado de Pontos</span>
-                  </button>
-
-                  <button
-                    onClick={() => setLearnSubTab('yarn')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                      learnSubTab === 'yarn'
-                        ? 'bg-terracotta-500 text-white shadow-sm'
-                        : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 hover:bg-cream-100 dark:hover:bg-stone-800'
-                    }`}
-                  >
-                    <Ruler className="w-4 h-4" />
-                    <span>Guia de Fios & Agulhas</span>
-                  </button>
-                </div>
-
-                {learnSubTab === 'dictionary' ? <StitchDictionary /> : <YarnNeedleGuide />}
-              </div>
-            )}
-
-            {/* TAB 4: HUB DE CRIAÇÃO (Studio 3D + Editor de Receita Unificados) */}
+            {/* TAB 3: HUB DE CRIAÇÃO (Studio 3D + Editor de Receita + Modo Crochetagem) */}
             {viewTab === 'creation' && (
               <div className="space-y-6">
-                {/* Sub-Header com Alternador entre Studio 3D e Editor */}
+                {/* Sub-Header com Alternador entre Studio 3D, Editor e Modo Crochetagem */}
                 <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-stone-800 p-3.5 rounded-2xl border border-cream-200 dark:border-stone-700 shadow-sm">
                   <div>
                     <h1 className="text-base font-bold text-stone-900 dark:text-white">
@@ -129,6 +96,17 @@ export const App: React.FC = () => {
                     >
                       <FileText className="w-4 h-4 text-terracotta-500" />
                       <span>Editor de Receita</span>
+                    </button>
+                    <button
+                      onClick={() => setCreationSubTab('tracker')}
+                      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                        creationSubTab === 'tracker'
+                          ? 'bg-white dark:bg-stone-800 text-terracotta-600 dark:text-terracotta-400 shadow-sm'
+                          : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                      }`}
+                    >
+                      <PlayCircle className="w-4 h-4 text-terracotta-500" />
+                      <span>Modo Crochetagem</span>
                     </button>
                   </div>
                 </div>
@@ -190,11 +168,44 @@ export const App: React.FC = () => {
                     {patternSubTab === 'text' ? <PatternTextEditor /> : <PatternRowTable />}
                   </div>
                 )}
+
+                {/* Sub-Aba Modo Crochetagem */}
+                {creationSubTab === 'tracker' && <LiveTrackerView />}
               </div>
             )}
 
-            {/* TAB 5: MODO CROCHETAGEM (Live Tracker com Play/Pause e Visão de Todas as Partes) */}
-            {viewTab === 'tracker' && <LiveTrackerView />}
+            {/* TAB 4: TUTORIAIS & GUIA DE FIOS */}
+            {viewTab === 'learn' && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 border-b border-cream-200 dark:border-stone-800 pb-2">
+                  <button
+                    onClick={() => setLearnSubTab('dictionary')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                      learnSubTab === 'dictionary'
+                        ? 'bg-terracotta-500 text-white shadow-sm'
+                        : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 hover:bg-cream-100 dark:hover:bg-stone-800'
+                    }`}
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    <span>Dicionário Ilustrado de Pontos</span>
+                  </button>
+
+                  <button
+                    onClick={() => setLearnSubTab('yarn')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                      learnSubTab === 'yarn'
+                        ? 'bg-terracotta-500 text-white shadow-sm'
+                        : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 hover:bg-cream-100 dark:hover:bg-stone-800'
+                    }`}
+                  >
+                    <Ruler className="w-4 h-4" />
+                    <span>Guia de Fios & Agulhas</span>
+                  </button>
+                </div>
+
+                {learnSubTab === 'dictionary' ? <StitchDictionary /> : <YarnNeedleGuide />}
+              </div>
+            )}
           </>
         )}
       </main>

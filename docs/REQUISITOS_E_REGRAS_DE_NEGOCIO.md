@@ -23,6 +23,11 @@ Documento formal consolidado com os Requisitos Funcionais, Requisitos Não-Funci
 | **RN-13** | **Hierarquia de Permissões Compartilhadas** | Ao compartilhar um projeto privado, o dono define o papel do convidado: **Visualizador/Maker** (pode visualizar o modelo 3D e acompanhar no Modo Crochetagem com progresso individual, sem alterar a receita) ou **Co-autor/Editor** (pode sugerir e editar instruções da receita). O download de PDF pode ser liberado ou bloqueado pelo dono. |
 | **RN-14** | **Engajamento e Rede de Artesãos (Follow & Likes)** | Usuários podem seguir artesãos na comunidade. Os projetos públicos dos artesãos seguidos aparecem com destaque no feed do usuário. Curtidas incrementam o ranking de popularidade dos modelos. |
 | **RN-15** | **Comunidade 'Feito por Você' (Makes)** | Usuários que crochetagem receitas públicas da comunidade podem publicar fotos de suas peças físicas reais na página do projeto original, enriquecendo a receita com fotos reais da comunidade mantendo os créditos do designer. |
+| **RN-16** | **Obrigatoriedade de Tela de Detalhes da Receita** | O clique em um card de projeto na Prateleira ou na Comunidade direciona para a visualização dedicada (`ProjectDetailView`), onde o artesão visualiza a foto real da peça, lista de materiais/ingredientes, créditos do designer, fotos da comunidade e botões claros de ação para "Abrir no 3D Studio" e "Iniciar Modo Crochetagem". |
+| **RN-17** | **Controle Explícito de Reprodução no Modo Crochetagem (Play/Pause Gate)** | O áudio do ditado TTS e a progressão de pontos nunca devem iniciar automaticamente ao abrir a tela. A execução requer ação intencional do usuário através do botão "Iniciar Execução" (Play/Pause), prevenindo disparos sonoros inesperados e garantindo controle ergonômico pleno. |
+| **RN-18** | **Tradução Automática de Idioma e Convenções (pt-BR $\leftrightarrow$ US)** | A alternância entre português e inglês no editor traduz não apenas os termos de pontos, mas normaliza números de carreira (`Carr. X:` $\leftrightarrow$ `Rnd X:`), repetições e anotações com ancoragem de regex no início da linha para nunca corromper contagens isoladas de pontos (ex: `6 pb`). |
+| **RN-19** | **Exportação em PDF com Checkboxes para Impressão Física** | O PDF gerado deve conter caixas de checagem impressas (`[ ]`) para cada carreira, permitindo ao artesão marcar com caneta seu progresso no papel, além de foto da peça física na capa e tabela de materiais. |
+| **RN-20** | **Autenticação Fluida e Gestão Local de Identidades** | O sistema deve permitir criar novas contas de artesão e alternar entre perfis de teste ou locais instantaneamente sem exigir confirmações de e-mail ou senhas impeditivas na versão local. |
 
 ---
 
@@ -63,7 +68,7 @@ Documento formal consolidado com os Requisitos Funcionais, Requisitos Não-Funci
 - **RF-22**: Cada projeto na aba `Meus Projetos` deve exibir um seletor de visibilidade (`Público` / `Privado`).
 - **RF-23**: O sistema deve fornecer um modal de compartilhamento para projetos privados, permitindo convidar por `@handle`, gerar link com chave de acesso revogável e definir o nível de permissão (`viewer` ou `editor`).
 - **RF-24**: A aba `Compartilhados Comigo` deve listar todos os projetos privados concedidos por outros artesãos, indicando o autor original, o papel recebido e um botão de resgatar chave/token de convite.
-- **RF-25**: O sistema deve exportar a receita em PDF com layout profissional de revista (capa com render 3D em alta resolução, assinatura do designer, ficha técnica, abreviações, instruções por partes e QR Code).
+- **RF-25**: O sistema deve exportar a receita em PDF com layout profissional de revista (capa com foto real do amigurumi, assinatura do designer, ficha técnica, abreviações, instruções por partes e checkboxes de acompanhamento `[ ]`).
 - **RF-26**: O sistema deve permitir exportar e importar arquivos de backup `.crochet3d` preservando a autoria original do modelo.
 
 ### 2.7. Galeria Pública da Comunidade & Rede Social
@@ -81,6 +86,14 @@ Documento formal consolidado com os Requisitos Funcionais, Requisitos Não-Funci
 - **RF-36**: O sistema deve exibir um Painel de Conquistas e Estatísticas acumuladas no perfil (total de pontos tecidos, metros de fio consumidos e projetos finalizados).
 - **RF-37**: O sistema deve permitir alternar entre múltiplos perfis de artesão no mesmo navegador.
 - **RF-38**: O sistema deve oferecer arquitetura preparada para login opcional em nuvem (Google/Email via Supabase/Firebase) para sincronizar projetos entre dispositivos.
+
+### 2.9. Experiência de Uso, Acessibilidade e Ferramentas Auxiliares
+- **RF-39**: A barra de navegação principal deve apresentar a ordem de 4 abas `1. Comunidade`, `2. Prateleira`, `3. Criação` (com 3 sub-abas: `Studio 3D`, `Editor de Receitas` e `Modo Crochetagem`) e `4. Tutoriais`.
+- **RF-40**: Cada ponto do dicionário e das carreiras deve possuir diagrama visual explicativo em SVG com suporte a inversão horizontal para artesãos canhotos (`scaleX(-1)`).
+- **RF-41**: O Modo Crochetagem deve disponibilizar uma gaveta lateral retrátil (drawer) com a receita completa de todas as peças e carreiras do amigurumi, permitindo salto direto.
+- **RF-42**: O clique sobre qualquer ponto abreviado em uma carreira ativa deve abrir imediatamente um modal flutuante com o tutorial e diagrama SVG do ponto.
+- **RF-43**: O editor de receitas deve possuir tradutor automático bidirecional pt-BR $\leftrightarrow$ US com preservação de estrutura e contagens de pontos.
+- **RF-44**: O exportador de PDF deve incorporar a fotografia da peça física pronta com proporção preservada na capa da receita impressa.
 
 ---
 

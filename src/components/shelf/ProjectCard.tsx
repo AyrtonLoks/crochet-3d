@@ -27,7 +27,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   sharedPermission,
   allowPdfDownload = true,
 }) => {
-  const { setActiveProjectId, setViewTab, deleteProject, setSelectedProjectDetailId } = useCrochetStore();
+  const {
+    setActiveProjectId,
+    setViewTab,
+    setCreationSubTab,
+    deleteProject,
+    setSelectedProjectDetailId,
+    openProjectInTracker,
+  } = useCrochetStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const totalRows = project.parts.reduce((sum, p) => sum + p.rows.length, 0);
@@ -47,13 +54,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const handleOpenStudio = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveProjectId(project.id);
+    setCreationSubTab('studio');
     setViewTab('creation');
   };
 
   const handleOpenTracker = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveProjectId(project.id);
-    setViewTab('tracker');
+    openProjectInTracker(project.id);
   };
 
   const handleExportPdf = (e: React.MouseEvent) => {

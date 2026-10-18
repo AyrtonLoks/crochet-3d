@@ -21,6 +21,7 @@ interface CrochetState {
   creationSubTab: CreationSubTab;
   shelfSubTab: ShelfSubTab;
   selectedProjectDetailId: string | null;
+  projectDetailInitialMode: 'overview' | 'tracker';
   trackerIsPlaying: boolean;
   ttsEnabled: boolean;
   voiceCommandsEnabled: boolean;
@@ -32,6 +33,8 @@ interface CrochetState {
   setCreationSubTab: (subTab: CreationSubTab) => void;
   setShelfSubTab: (subTab: ShelfSubTab) => void;
   setSelectedProjectDetailId: (id: string | null) => void;
+  setProjectDetailInitialMode: (mode: 'overview' | 'tracker') => void;
+  openProjectInTracker: (projectId: string) => void;
   setTrackerIsPlaying: (playing: boolean) => void;
   toggleTrackerPlay: () => void;
   setTtsEnabled: (enabled: boolean) => void;
@@ -76,6 +79,7 @@ export const useCrochetStore = create<CrochetState>((set, get) => ({
   creationSubTab: 'studio',
   shelfSubTab: 'my-projects',
   selectedProjectDetailId: null,
+  projectDetailInitialMode: 'overview',
   trackerIsPlaying: false,
   ttsEnabled: false,
   voiceCommandsEnabled: false,
@@ -85,7 +89,19 @@ export const useCrochetStore = create<CrochetState>((set, get) => ({
   setViewTab: (viewTab) => set({ viewTab }),
   setCreationSubTab: (creationSubTab) => set({ creationSubTab }),
   setShelfSubTab: (shelfSubTab) => set({ shelfSubTab }),
-  setSelectedProjectDetailId: (selectedProjectDetailId) => set({ selectedProjectDetailId }),
+  setSelectedProjectDetailId: (selectedProjectDetailId) =>
+    set({ selectedProjectDetailId, projectDetailInitialMode: 'overview' }),
+  setProjectDetailInitialMode: (projectDetailInitialMode) => set({ projectDetailInitialMode }),
+  openProjectInTracker: (projectId: string) => {
+    const project = get().projects.find((p) => p.id === projectId);
+    const activePartId = project?.parts[0]?.id || '';
+    set({
+      activeProjectId: projectId,
+      activePartId,
+      selectedProjectDetailId: projectId,
+      projectDetailInitialMode: 'tracker',
+    });
+  },
   setTrackerIsPlaying: (trackerIsPlaying) => set({ trackerIsPlaying }),
   toggleTrackerPlay: () => set((state) => ({ trackerIsPlaying: !state.trackerIsPlaying })),
   setTtsEnabled: (ttsEnabled) => set({ ttsEnabled }),

@@ -43,6 +43,7 @@ flowchart LR
     Fase3 --> Fase4["Fase 4: Modo Crochetagem<br/><b>[CONCLUÍDA]</b>"]
     Fase4 --> Fase5["Fase 5: Dicionário & Tutoriais<br/><b>[CONCLUÍDA]</b>"]
     Fase5 --> Fase6["Fase 6: Prateleira, Compartilhamento & Comunidade<br/><b>[CONCLUÍDA]</b>"]
+    Fase6 --> Fase7["Fase 7: Refatoração, Correções e Expansão de UX<br/><b>[CONCLUÍDA]</b>"]
 ```
 
 ---
@@ -117,20 +118,39 @@ flowchart LR
 
 ---
 
+### Fase 7: Refatoração, Correções Críticas e Expansão de UX `[CONCLUÍDA]`
+
+- **Status**: 100% Implementado e Testado.
+- **Artefatos Entregues**:
+  - `src/components/layout/Navbar.tsx`: Reordenação da barra com 4 abas principais (`Comunidade` -> `Prateleira` -> `Criação` -> `Tutoriais`) e centralização contextual do Modo Crochetagem como 3ª sub-aba de Criação e na visualização dedicada do modelo.
+  - `src/components/project/ProjectDetailView.tsx`: Tela de apresentação editorial com hero image real, especificações técnicas, lista de materiais/fios, botões de ação direta ("Abrir no 3D Studio" e "Modo Crochetagem") e mural comunitário.
+  - `src/core/parser/PatternTranslator.ts`: Tradutor bidirecional inteligente pt-BR $\leftrightarrow$ US com regex ancorada no início da linha para evitar corrupção de números de contagem (`6 pb`).
+  - `src/components/pattern/PatternTextEditor.tsx`: Botão de tradução instantânea e conversão automática ao alternar idiomas.
+  - `src/core/engine/RecipeToMesh.ts`: Lathe esférico com fechamento perfeito em leque triangular (`fan`) no topo e na base, além de Laplacian Smoothing prevenindo pontas e malhas abertas.
+  - `src/core/engine/CrochetShaderMaterial.ts`: Shaders aprimorados com Wrap Diffuse e Micro-Weave Sheen para textura aveludada.
+  - `src/components/tracker/LiveTrackerView.tsx`: Controle intencional de execução (botão Play/Pause para áudio TTS), gaveta retrátil lateral com visão de todas as partes e carreiras do amigurumi, e badges clicáveis que abrem tutoriais com 1 clique.
+  - `src/components/learn/StitchSvgDiagram.tsx`: Diagramas vetoriais paramétricos em SVG para todos os pontos básicos e avançados com espelhamento ergonômico para artesãos canhotos (`scaleX(-1)`).
+  - `src/core/export/PdfExporter.ts`: Exportação em PDF no padrão revista com foto real de capa, tabela de materiais, convenções e caixas de checagem impressas (`[ ]`).
+  - `src/components/auth/AuthModal.tsx`: Gestor de autenticação local com troca instantânea de perfis e criação de novos artesãos sem barreiras.
+  - `src/__tests__/parsers.test.ts`: Suíte de testes expandida para 13 cenários cobrindo tradução bidirecional e regex de carreira.
+
+---
+
 ## 5. Relatório de Verificação e Homologação
 
 ### Testes Automatizados (Vitest)
 ```powershell
 npm test -- --run
 ```
-- **Total de Testes**: 16 testes unitários em 2 suítes.
-- **Resultado**: 16 passed (0 failed).
-  - `src/__tests__/parsers.test.ts` (11 testes): Validação de parsing pt-BR, US, expansão de ranges, repetições aninhadas e tokens isolados.
-  - `src/__tests__/engine.test.ts` (5 testes): Fatiamento radial, conservação de pontos na malha, geração de malha tubular e validação matemática sem falsos positivos.
+- **Total de Testes**: 25 testes unitários em 3 suítes.
+- **Resultado**: 25 passed (0 failed).
+  - `src/__tests__/parsers.test.ts` (13 testes): Validação de parsing pt-BR, US, tradução bidirecional com regex ancorada, expansão de ranges e repetições aninhadas.
+  - `src/__tests__/store_and_tabs.test.ts` (7 testes): Validação da hierarquia de 4 abas, sub-abas de Criação, controle de Play/Pause e abertura de projeto no tracker.
+  - `src/__tests__/engine.test.ts` (5 testes): Fatiamento radial, conservação de pontos na malha, geração de malha tubular fechada e validação matemática sem falsos positivos.
 
 ### Compilação de Produção
 ```powershell
 npm run build
 ```
-- **Resultado**: Exit code 0, 2431 módulos compilados com sucesso via `tsc -b && vite build`.
-- **Diagnósticos**: 0 erros de tipos TypeScript.
+- **Resultado**: Exit code 0, 2435 módulos compilados com sucesso via `tsc -b && vite build`.
+- **Diagnósticos**: 0 erros de tipos TypeScript e 0 warnings impeditivos.

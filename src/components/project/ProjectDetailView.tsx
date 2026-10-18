@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   Play,
@@ -21,6 +21,7 @@ import { CommunityMakesSection } from '@/components/community/CommunityMakesSect
 import { PdfExporter } from '@/core/export/PdfExporter';
 import { ShareAccessModal } from '@/components/shelf/ShareAccessModal';
 import { PublicArtisanProfileModal } from '@/components/community/PublicArtisanProfileModal';
+import { LiveTrackerView } from '@/components/tracker/LiveTrackerView';
 import { ArtisanProfile } from '@/types/crochet';
 
 export const ProjectDetailView: React.FC = () => {
@@ -28,6 +29,8 @@ export const ProjectDetailView: React.FC = () => {
     projects,
     selectedProjectDetailId,
     setSelectedProjectDetailId,
+    projectDetailInitialMode,
+    setProjectDetailInitialMode,
     setActiveProjectId,
     setViewTab,
     setCreationSubTab,
@@ -39,10 +42,51 @@ export const ProjectDetailView: React.FC = () => {
   const [activePartTab, setActivePartTab] = useState<string>('');
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [selectedArtisan, setSelectedArtisan] = useState<ArtisanProfile | null>(null);
+  const [isCrocheting, setIsCrocheting] = useState(projectDetailInitialMode === 'tracker');
+
+  useEffect(() => {
+    setIsCrocheting(projectDetailInitialMode === 'tracker');
+  }, [projectDetailInitialMode, selectedProjectDetailId]);
 
   const project = projects.find((p) => p.id === selectedProjectDetailId);
 
-  if (!project) return null;
+  if (!project) {
+    return (
+      <div className="max-w-md mx-auto text-center py-16 space-y-4">
+        <p className="text-sm text-stone-500">Projeto não encontrado.</p>
+        <button
+          onClick={() => {
+            setSelectedProjectDetailId(null);
+            setProjectDetailInitialMode('overview');
+          }}
+          className="px-4 py-2 rounded-xl bg-terracotta-500 text-white text-xs font-bold shadow-sm"
+        >
+          Voltar para a Galeria
+        </button>
+      </div>
+    );
+  }
+
+  if (isCrocheting) {
+    return (
+      <div className="max-w-6xl mx-auto space-y-6 animate-fade-in pb-16">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => {
+              setIsCrocheting(false);
+              setProjectDetailInitialMode('overview');
+            }}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-cream-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-cream-100 dark:hover:bg-stone-700 text-xs font-bold transition-all shadow-sm"
+          >
+            <ArrowLeft className="w-4 h-4 text-terracotta-500" />
+            <span>Voltar aos Detalhes do Projeto ({project.title})</span>
+          </button>
+        </div>
+
+        <LiveTrackerView />
+      </div>
+    );
+  }
 
   const currentPartId = activePartTab || project.parts[0]?.id || '';
   const currentPart = project.parts.find((p) => p.id === currentPartId) || project.parts[0];
@@ -68,14 +112,15 @@ export const ProjectDetailView: React.FC = () => {
 
   const handleStartCrocheting = () => {
     setActiveProjectId(project.id);
-    setSelectedProjectDetailId(null);
-    setViewTab('tracker');
+    setProjectDetailInitialMode('tracker');
+    setIsCrocheting(true);
   };
 
   const handleOpenStudio = () => {
     setActiveProjectId(project.id);
     setCreationSubTab('studio');
     setSelectedProjectDetailId(null);
+    setProjectDetailInitialMode('overview');
     setViewTab('creation');
   };
 
@@ -88,7 +133,10 @@ export const ProjectDetailView: React.FC = () => {
       {/* Botão de Voltar */}
       <div className="flex items-center justify-between">
         <button
-          onClick={() => setSelectedProjectDetailId(null)}
+          onClick={() => {
+            setSelectedProjectDetailId(null);
+            setProjectDetailInitialMode('overview');
+          }}
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-cream-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-cream-100 dark:hover:bg-stone-700 text-xs font-bold transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4 text-terracotta-500" />

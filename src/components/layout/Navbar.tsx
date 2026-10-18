@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   Box,
-  PlayCircle,
   BookOpen,
   FolderHeart,
   Users,
@@ -48,9 +47,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenProfile, onOpenAuth }) => 
   const navItems: { id: MainTab; label: string; icon: React.ReactNode }[] = [
     { id: 'community', label: 'Comunidade', icon: <Users className="w-4 h-4" /> },
     { id: 'shelf', label: 'Prateleira', icon: <FolderHeart className="w-4 h-4" /> },
-    { id: 'learn', label: 'Tutoriais', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'creation', label: 'Criação', icon: <Box className="w-4 h-4" /> },
-    { id: 'tracker', label: 'Modo Crochetagem', icon: <PlayCircle className="w-4 h-4" /> },
+    { id: 'learn', label: 'Tutoriais', icon: <BookOpen className="w-4 h-4" /> },
   ];
 
   const handleTabClick = (tabId: MainTab) => {
@@ -80,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenProfile, onOpenAuth }) => 
           </div>
         </div>
 
-        {/* Central Navigation Tabs (Ordem: 1. Comunidade -> 2. Prateleira -> 3. Tutoriais -> 4. Criação -> 5. Tracker) */}
+        {/* Central Navigation Tabs (Ordem: 1. Comunidade -> 2. Prateleira -> 3. Criação -> 4. Tutoriais) */}
         <nav className="hidden md:flex items-center gap-1 bg-cream-100/70 dark:bg-stone-800/70 p-1 rounded-xl border border-cream-200 dark:border-stone-700">
           {navItems.map((item) => {
             const isActive = viewTab === item.id;

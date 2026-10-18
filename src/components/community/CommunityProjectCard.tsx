@@ -15,7 +15,13 @@ export const CommunityProjectCard: React.FC<CommunityProjectCardProps> = ({
   onSelectArtisan,
 }) => {
   const { toggleLike, isLiked, toggleBookmark, isBookmarked } = useSocialStore();
-  const { setActiveProjectId, setViewTab, setSelectedProjectDetailId } = useCrochetStore();
+  const {
+    setActiveProjectId,
+    setViewTab,
+    setCreationSubTab,
+    setSelectedProjectDetailId,
+    openProjectInTracker,
+  } = useCrochetStore();
 
   const liked = isLiked(project.id);
   const bookmarked = isBookmarked(project.id);
@@ -28,13 +34,13 @@ export const CommunityProjectCard: React.FC<CommunityProjectCardProps> = ({
   const handleOpenStudio = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveProjectId(project.id);
+    setCreationSubTab('studio');
     setViewTab('creation');
   };
 
   const handleOpenTracker = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveProjectId(project.id);
-    setViewTab('tracker');
+    openProjectInTracker(project.id);
   };
 
   return (

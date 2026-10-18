@@ -24,8 +24,8 @@ export interface StitchInfo {
   yarnFactor: number;       // Consumo relativo de fio em cm
 }
 
-export type MainTab = 'community' | 'shelf' | 'learn' | 'creation' | 'tracker';
-export type CreationSubTab = 'studio' | 'pattern';
+export type MainTab = 'community' | 'shelf' | 'creation' | 'learn';
+export type CreationSubTab = 'studio' | 'pattern' | 'tracker';
 
 export type DominantHand = 'right' | 'left';
 export type SkillLevel = 'beginner' | 'intermediate' | 'advanced';
