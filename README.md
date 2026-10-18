@@ -236,10 +236,11 @@ npm run test:watch
 
 Toda a base técnica, requisitos e cadernos de pesquisa científica estão documentados nas pastas [`docs/`](./docs/) e [`plans/`](./plans/):
 
-### 📋 Especificações do Sistema
+### 📋 Especificações do Sistema e Planejamento
 - 📄 [**Especificação Técnica e Arquitetura (`docs/ESPECIFICACAO_TECNICA.md`)**](./docs/ESPECIFICACAO_TECNICA.md): Modelos de dados em TypeScript, diagramas em camadas e contratos de serviços.
 - 📋 [**Matriz de Requisitos e Regras de Negócio (`docs/REQUISITOS_E_REGRAS_DE_NEGOCIO.md`)**](./docs/REQUISITOS_E_REGRAS_DE_NEGOCIO.md): Matriz de 15 Regras de Negócio (RN-01 a RN-15) e 38 Requisitos Funcionais (RF-01 a RF-38).
 - 🛠️ [**Plano de Desenvolvimento e Homologação (`plans/PLANO_DE_DESENVOLVIMENTO.md`)**](./plans/PLANO_DE_DESENVOLVIMENTO.md): Roteiro das 6 fases concluídas com relatório de testes e compilação.
+- 🗺️ [**Roadmap Estratégico de Futuras Implementações (`plans/ROADMAP_FUTURO.md`)**](./plans/ROADMAP_FUTURO.md): 4 Ciclos futuros (IA/OCR Têxtil, App Nativo nas Lojas, Marketplace de Designers e Vestuário PP-XG).
 
 ### 🔬 Caderno de Pesquisa Técnica para Futuras Explorações (`docs/research/`)
 - 📐 [**Modelagem Matemática e Fatiamento Têxtil (`docs/research/MATHEMATICAL_MODELING_AND_SLICING.md`)**](./docs/research/MATHEMATICAL_MODELING_AND_SLICING.md): Curvatura Gaussiana em crochê, algoritmo de fatiamento radial adaptativo e partição equiangular de laçadas.
