@@ -232,12 +232,20 @@ npm run test:watch
 
 ---
 
-## 📚 Documentação Completa
+## 📚 Documentação Completa e Pesquisa Técnica
 
-Para aprofundar-se em todas as decisões de design, requisitos e regras de negócio:
-- 📄 [**Especificação Técnica e Arquitetura (`docs/ESPECIFICACAO_TECNICA.md`)**](./docs/ESPECIFICACAO_TECNICA.md)
-- 📋 [**Matriz de Requisitos e Regras de Negócio (`docs/REQUISITOS_E_REGRAS_DE_NEGOCIO.md`)**](./docs/REQUISITOS_E_REGRAS_DE_NEGOCIO.md)
-- 🛠️ [**Plano de Desenvolvimento e Fases (`plans/PLANO_DE_DESENVOLVIMENTO.md`)**](./plans/PLANO_DE_DESENVOLVIMENTO.md)
+Toda a base técnica, requisitos e cadernos de pesquisa científica estão documentados nas pastas [`docs/`](./docs/) e [`plans/`](./plans/):
+
+### 📋 Especificações do Sistema
+- 📄 [**Especificação Técnica e Arquitetura (`docs/ESPECIFICACAO_TECNICA.md`)**](./docs/ESPECIFICACAO_TECNICA.md): Modelos de dados em TypeScript, diagramas em camadas e contratos de serviços.
+- 📋 [**Matriz de Requisitos e Regras de Negócio (`docs/REQUISITOS_E_REGRAS_DE_NEGOCIO.md`)**](./docs/REQUISITOS_E_REGRAS_DE_NEGOCIO.md): Matriz de 15 Regras de Negócio (RN-01 a RN-15) e 38 Requisitos Funcionais (RF-01 a RF-38).
+- 🛠️ [**Plano de Desenvolvimento e Homologação (`plans/PLANO_DE_DESENVOLVIMENTO.md`)**](./plans/PLANO_DE_DESENVOLVIMENTO.md): Roteiro das 6 fases concluídas com relatório de testes e compilação.
+
+### 🔬 Caderno de Pesquisa Técnica para Futuras Explorações (`docs/research/`)
+- 📐 [**Modelagem Matemática e Fatiamento Têxtil (`docs/research/MATHEMATICAL_MODELING_AND_SLICING.md`)**](./docs/research/MATHEMATICAL_MODELING_AND_SLICING.md): Curvatura Gaussiana em crochê, algoritmo de fatiamento radial adaptativo e partição equiangular de laçadas.
+- ✨ [**Shaders PBR e Física de Fios (`docs/research/PBR_SHADERS_AND_YARN_PHYSICS.md`)**](./docs/research/PBR_SHADERS_AND_YARN_PHYSICS.md): Óptica de fibras têxteis, síntese procedural de nós em GPU e otimizações WebGL para dispositivos móveis.
+- 🎙️ [**Ergonomia, Acessibilidade e Engenharia de Voz (`docs/research/HANDS_FREE_VOICE_UX_AND_ERGONOMICS.md`)**](./docs/research/HANDS_FREE_VOICE_UX_AND_ERGONOMICS.md): Biomecânica da mão dominante, ergonomia para canhotos, máquina de estados finitos (FSM) de voz e prevenção de LER/DORT.
+- 🗄️ [**Arquitetura de Dados, Direitos e Federação (`docs/research/DATA_ARCHITECTURE_AND_FEDERATION.md`)**](./docs/research/DATA_ARCHITECTURE_AND_FEDERATION.md): Formato canônico aberto `.crochet3d`, modelo de autoria imutável vs diário do maker, e políticas Supabase RLS.
 
 ---
 
