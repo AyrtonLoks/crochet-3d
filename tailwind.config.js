@@ -1,0 +1,66 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        terracotta: {
+          50: '#fff5f2',
+          100: '#ffe8e1',
+          200: '#ffd5c8',
+          300: '#fba894',
+          400: '#f67258',
+          500: '#ea4a2a',
+          600: '#d73418',
+          700: '#b42611',
+          800: '#952212',
+          900: '#7c2114',
+        },
+        sage: {
+          50: '#f4f7f4',
+          100: '#e5ede5',
+          200: '#cddfcd',
+          300: '#a7caa7',
+          400: '#7bae7c',
+          500: '#589259',
+          600: '#437644',
+          700: '#365e37',
+          800: '#2d4b2e',
+          900: '#263f27',
+        },
+        lavender: {
+          50: '#f7f6fd',
+          100: '#eeecfa',
+          200: '#dfdcf6',
+          300: '#c5bef0',
+          400: '#a79ae6',
+          500: '#8c76dc',
+          600: '#7958cc',
+          700: '#6745b5',
+          800: '#563a96',
+          900: '#47317b',
+        },
+        cream: {
+          50: '#fdfbf7',
+          100: '#f7f3ec',
+          200: '#ede4d4',
+          300: '#dfceb5',
+          400: '#cdb391',
+          500: '#be9973',
+          600: '#af8361',
+          700: '#91694f',
+          800: '#775643',
+          900: '#624739',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+}
