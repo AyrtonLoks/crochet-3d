@@ -249,9 +249,10 @@ npm run test:watch
 Toda a base técnica, requisitos e cadernos de pesquisa científica estão documentados nas pastas [`docs/`](./docs/) e [`plans/`](./plans/):
 
 ### 📋 Especificações do Sistema e Planejamento
+- 📘 [**Memorial Descritivo e Aprendizados Técnicos (`docs/MEMORIAL_DESCRITIVO_E_APRENDIZADOS.md`)**](./docs/MEMORIAL_DESCRITIVO_E_APRENDIZADOS.md): Registro exaustivo de decisões, catálogo de armadilhas superadas e guia para ciclos futuros.
 - 📄 [**Especificação Técnica e Arquitetura (`docs/ESPECIFICACAO_TECNICA.md`)**](./docs/ESPECIFICACAO_TECNICA.md): Modelos de dados em TypeScript, diagramas em camadas e contratos de serviços.
 - 📋 [**Matriz de Requisitos e Regras de Negócio (`docs/REQUISITOS_E_REGRAS_DE_NEGOCIO.md`)**](./docs/REQUISITOS_E_REGRAS_DE_NEGOCIO.md): Matriz de 20 Regras de Negócio (RN-01 a RN-20) e 44 Requisitos Funcionais (RF-01 a RF-44).
-- 🛠️ [**Plano de Desenvolvimento e Homologação (`plans/PLANO_DE_DESENVOLVIMENTO.md`)**](./plans/PLANO_DE_DESENVOLVIMENTO.md): Roteiro das 7 fases concluídas com relatório de testes (23 testes) e compilação de produção.
+- 🛠️ [**Plano de Desenvolvimento e Homologação (`plans/PLANO_DE_DESENVOLVIMENTO.md`)**](./plans/PLANO_DE_DESENVOLVIMENTO.md): Roteiro das 7 fases concluídas com relatório de testes (25 testes) e compilação de produção.
 - 📐 [**Plano de Refatoração e Expansão (`plans/PLANO_DE_REFATORACAO_E_EXPANSAO.md`)**](./plans/PLANO_DE_REFATORACAO_E_EXPANSAO.md): Especificação dos novos componentes e correções ergonômicas.
 - 🗺️ [**Roadmap Estratégico de Futuras Implementações (`plans/ROADMAP_FUTURO.md`)**](./plans/ROADMAP_FUTURO.md): 4 Ciclos futuros (IA/OCR Têxtil, App Nativo, Marketplace e Vestuário PP-XG).
 
